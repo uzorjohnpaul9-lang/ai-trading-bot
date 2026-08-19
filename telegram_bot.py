@@ -90,10 +90,10 @@ class TelegramBot:
                 f"\U0001f3af <b>Take Profit:</b> ${signal.take_profit:,.2f}\n"
                 f"\U0001f3af <b>Confidence:</b> {signal.confidence:.0%}\n"
                 f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
-                f"\n\n\u2b07\ufe0f <b>Want more?</b>"
-                f"\n\U0001f510 <b>Pro ($29/mo):</b> Deep analysis, R:R ratio, all pairs"
-                f"\n\U0001f680 <b>VIP ($99/mo):</b> Auto-trade on YOUR account"
-                f"\n\n<a href=\"{self.payment_link}\">\u2705 Tap here to upgrade</a>"
+                f"\n\n\u2b07\ufe0f <b>Want premium signals?</b>"
+                f"\n\U0001f510 <b>Pro ($10/mo):</b> Full analysis, R:R ratio, all pairs"
+                f"\n\U0001f680 <b>VIP ($25/mo):</b> Bot auto-trades on YOUR exchange account"
+                f"\n\n\u2709 <i>DM @uzorjohn to upgrade</i>"
             )
 
         elif tier == "pro":
@@ -117,7 +117,7 @@ class TelegramBot:
 
             msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
             msg += f"\n\n\U0001f4b0 <i>Want auto-trading?</i>"
-            msg += f"\n<a href=\"{self.payment_link}\">\U0001f680 Upgrade to VIP ($99/mo)</a>"
+            msg += f"\n\U0001f680 <b>DM @uzorjohn for VIP ($25/mo)</b>"
 
         elif tier == "vip":
             # VIP users see everything + auto-trade confirmation
