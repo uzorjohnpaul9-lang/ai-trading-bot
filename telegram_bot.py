@@ -93,7 +93,7 @@ class TelegramBot:
                 f"\n\n\u2b07\ufe0f <b>Want premium signals?</b>"
                 f"\n\U0001f510 <b>Pro ($10/mo):</b> Full analysis, R:R ratio, all pairs"
                 f"\n\U0001f680 <b>VIP ($25/mo):</b> Bot auto-trades on YOUR exchange account"
-                f"\n\n\u2709 <i>DM @uzorjohn to upgrade</i>"
+                f"\n\n\u2709 <i>DM @Johnpaul_muna83 to upgrade</i>"
             )
 
         elif tier == "pro":
@@ -117,7 +117,7 @@ class TelegramBot:
 
             msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
             msg += f"\n\n\U0001f4b0 <i>Want auto-trading?</i>"
-            msg += f"\n\U0001f680 <b>DM @uzorjohn for VIP ($25/mo)</b>"
+            msg += f"\n\U0001f680 <b>DM @Johnpaul_muna83 for VIP ($25/mo)</b>"
 
         elif tier == "vip":
             # VIP users see everything + auto-trade confirmation
