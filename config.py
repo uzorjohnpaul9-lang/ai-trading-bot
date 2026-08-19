@@ -75,6 +75,7 @@ class TelegramConfig:
     """Telegram channel settings"""
     bot_token: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
     channel_id: str = os.getenv("TELEGRAM_CHANNEL_ID", "")
+    vip_channel_id: str = os.getenv("TELEGRAM_VIP_CHANNEL_ID", "")
     free_daily_limit: int = int(os.getenv("FREE_DAILY_LIMIT", "10"))
     enabled: bool = os.getenv("TELEGRAM_ENABLED", "true").lower() == "true"
 

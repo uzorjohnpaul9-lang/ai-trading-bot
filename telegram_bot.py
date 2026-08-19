@@ -24,6 +24,7 @@ class TelegramBot:
     def __init__(self, bot_token: str = None, channel_id: str = None):
         self.bot_token = bot_token or config.telegram.bot_token
         self.channel_id = channel_id or config.telegram.channel_id
+        self.vip_channel_id = config.telegram.vip_channel_id or self.channel_id
         self.base_url = f"https://api.telegram.org/bot{self.bot_token}"
         self.enabled = bool(self.bot_token and self.channel_id)
         self.signal_count = 0
@@ -33,7 +34,7 @@ class TelegramBot:
         self.last_reset = datetime.now().date()
         self.payment_link = "https://t.me/crypto3_ai_signals"
 
-    def _send_message(self, text: str, parse_mode: str = "HTML") -> bool:
+    def _send_message(self, text: str, parse_mode: str = "HTML", chat_id: str = None) -> bool:
         """Send a message via Telegram Bot API"""
         if not self.enabled:
             return False
@@ -41,7 +42,7 @@ class TelegramBot:
         try:
             url = f"{self.base_url}/sendMessage"
             data = json.dumps({
-                "chat_id": self.channel_id,
+                "chat_id": chat_id or self.channel_id,
                 "text": text,
                 "parse_mode": parse_mode,
                 "disable_web_page_preview": True
@@ -181,7 +182,10 @@ class TelegramBot:
             return False
 
         text = self.format_signal(signal, tier)
-        success = self._send_message(text)
+
+        # VIP signals go to VIP channel
+        target_channel = self.vip_channel_id if tier == "vip" else self.channel_id
+        success = self._send_message(text, chat_id=target_channel)
 
         if success:
             self.messages_sent_today += 1
