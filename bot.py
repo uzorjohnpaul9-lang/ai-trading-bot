@@ -106,12 +106,18 @@ class TradingBot:
             self.risk_manager.record_trade_open()
             self.stats["trades_taken"] += 1
 
-            # Send signal to Telegram (free tier gets delayed)
+            # Send signal to Telegram
             if self.telegram.enabled:
-                sent = self.telegram.send_signal(signal)
+                # Free signal first (delayed)
+                sent = self.telegram.send_free_signal(signal)
                 if sent:
                     self.stats["signals_sent"] += 1
-                    console.print("[cyan]  Signal posted to Telegram![/cyan]")
+                    console.print("[cyan]  Free signal posted to Telegram![/cyan]")
+
+                # Pro signal immediately (higher quality)
+                sent = self.telegram.send_pro_signal(signal)
+                if sent:
+                    console.print("[cyan]  Pro signal posted to Telegram![/cyan]")
 
             # Execute copy trades for paid users
             try:

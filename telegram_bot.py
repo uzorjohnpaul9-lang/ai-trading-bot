@@ -99,7 +99,18 @@ class TelegramBot:
         msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
 
         if tier == "free":
-            msg += f"\n\n\u2b07\ufe0f <i>Upgrade to Pro for real-time signals</i>"
+            msg += (
+                f"\n\n\u2b07\ufe0f <i>Free tier: 15min delayed signal</i>\n"
+                f"\U0001f510 <b>Upgrade to Pro for:</b>\n"
+                f"  \u2022 Instant signals\n"
+                f"  \u2022 Auto-trading on your account\n"
+                f"  \u2022 Priority execution\n"
+                f"  \u2022 $29/mo → t.me/crypto3_ai_signals"
+            )
+        elif tier == "pro":
+            msg += f"\n\n\u26a1 <i>Pro signal | Auto-trade active</i>"
+        elif tier == "vip":
+            msg += f"\n\n\U0001f48e <i>VIP signal | Priority execution</i>"
 
         return msg
 
@@ -150,6 +161,18 @@ class TelegramBot:
             self.signal_count += 1
 
         return success
+
+    def send_free_signal(self, signal) -> bool:
+        """Send free tier signal (public channel)"""
+        return self.send_signal(signal, tier="free")
+
+    def send_pro_signal(self, signal) -> bool:
+        """Send pro tier signal (premium)"""
+        return self.send_signal(signal, tier="pro")
+
+    def send_vip_signal(self, signal) -> bool:
+        """Send VIP tier signal (premium+)"""
+        return self.send_signal(signal, tier="vip")
 
     def send_status(self, stats: dict) -> bool:
         """Send bot status update to channel"""
