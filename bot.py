@@ -20,6 +20,7 @@ from paper_trader import PaperTrader
 from backtester import Backtester
 from telegram_bot import TelegramBot
 from copy_trader import copy_trader
+from database import init_db
 
 
 console = Console()
@@ -35,6 +36,7 @@ class TradingBot:
             title="Initializing"
         ))
 
+        init_db()
         self.fetcher = DataFetcher()
         self.risk_manager = RiskManager(config.initial_capital)
         self.paper_trader = PaperTrader(config.initial_capital)
