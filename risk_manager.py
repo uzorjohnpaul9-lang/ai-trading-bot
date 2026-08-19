@@ -124,6 +124,8 @@ class RiskManager:
     def get_stats(self) -> dict:
         """Get current risk statistics"""
         drawdown = (self.peak_capital - self.current_capital) / self.peak_capital if self.peak_capital > 0 else 0
+        winning = sum(1 for t in self.trade_history if t.get("pnl", 0) > 0)
+        total = len(self.trade_history)
         return {
             "current_capital": self.current_capital,
             "initial_capital": self.initial_capital,
@@ -133,5 +135,6 @@ class RiskManager:
             "daily_pnl": self.daily_pnl,
             "daily_trades": self.daily_trades,
             "open_positions": self.open_positions,
-            "total_trades": len(self.trade_history)
+            "total_trades": total,
+            "win_rate": (winning / total * 100) if total > 0 else 0
         }
