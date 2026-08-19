@@ -78,39 +78,65 @@ class TelegramBot:
         reward = abs(signal.take_profit - signal.entry_price)
         rr_ratio = reward / risk if risk > 0 else 0
 
-        msg = (
-            f"{emoji} <b>{direction} | {signal.symbol}</b> {emoji}\n"
-            f"\n"
-            f"\u2709 <b>Entry:</b> ${signal.entry_price:,.2f}\n"
-            f"\U0001f6ab <b>Stop Loss:</b> ${signal.stop_loss:,.2f}\n"
-            f"\U0001f3af <b>Take Profit:</b> ${signal.take_profit:,.2f}\n"
-            f"\n"
-            f"\U0001f4ca <b>Risk/Reward:</b> 1:{rr_ratio:.1f}\n"
-            f"\U0001f3af <b>Confidence:</b> {signal.confidence:.0%}\n"
-        )
-
-        # Add top reasons (max 3)
-        reasons = signal.reasons[:3]
-        if reasons:
-            msg += f"\n\U0001f4a1 <b>Reasons:</b>\n"
-            for r in reasons:
-                msg += f"  \u2022 {r}\n"
-
-        msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
-
         if tier == "free":
-            msg += (
-                f"\n\n\u2b07\ufe0f <i>Free tier: 15min delayed signal</i>\n"
-                f"\U0001f510 <b>Upgrade to Pro for:</b>\n"
-                f"  \u2022 Instant signals\n"
-                f"  \u2022 Auto-trading on your account\n"
-                f"  \u2022 Priority execution\n"
-                f"  \u2022 $29/mo → t.me/crypto3_ai_signals"
+            # Free users see basic signal with upgrade CTA
+            msg = (
+                f"{emoji} <b>{direction} | {signal.symbol}</b> {emoji}\n"
+                f"\n"
+                f"\u2709 <b>Entry:</b> ${signal.entry_price:,.2f}\n"
+                f"\U0001f6ab <b>Stop Loss:</b> ${signal.stop_loss:,.2f}\n"
+                f"\U0001f3af <b>Take Profit:</b> ${signal.take_profit:,.2f}\n"
+                f"\U0001f3af <b>Confidence:</b> {signal.confidence:.0%}\n"
+                f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
+                f"\n\n\u2b07\ufe0f <b>Want more?</b>"
+                f"\n\U0001f510 <b>Pro ($29/mo):</b> Deep analysis, R:R ratio, all pairs"
+                f"\n\U0001f680 <b>VIP ($99/mo):</b> Auto-trade on YOUR account"
+                f"\n\n<a href=\"{self.payment_link}\">\u2705 Tap here to upgrade</a>"
             )
+
         elif tier == "pro":
-            msg += f"\n\n\u26a1 <i>Pro signal | Auto-trade active</i>"
+            # Pro users see full signal with reasons and analysis
+            msg = (
+                f"{emoji} <b>{direction} | {signal.symbol}</b> {emoji}\n"
+                f"\n"
+                f"\u2709 <b>Entry:</b> ${signal.entry_price:,.2f}\n"
+                f"\U0001f6ab <b>Stop Loss:</b> ${signal.stop_loss:,.2f}\n"
+                f"\U0001f3af <b>Take Profit:</b> ${signal.take_profit:,.2f}\n"
+                f"\n"
+                f"\U0001f4ca <b>Risk/Reward:</b> 1:{rr_ratio:.1f}\n"
+                f"\U0001f3af <b>Confidence:</b> {signal.confidence:.0%}\n"
+            )
+
+            # Full reasons for pro
+            if signal.reasons:
+                msg += f"\n\U0001f4a1 <b>Analysis:</b>\n"
+                for r in signal.reasons[:5]:
+                    msg += f"  \u2022 {r}\n"
+
+            msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
+            msg += f"\n\n\U0001f4b0 <i>Want auto-trading?</i>"
+            msg += f"\n<a href=\"{self.payment_link}\">\U0001f680 Upgrade to VIP ($99/mo)</a>"
+
         elif tier == "vip":
-            msg += f"\n\n\U0001f48e <i>VIP signal | Priority execution</i>"
+            # VIP users see everything + auto-trade confirmation
+            msg = (
+                f"{emoji} <b>{direction} | {signal.symbol}</b> {emoji}\n"
+                f"\n"
+                f"\u2709 <b>Entry:</b> ${signal.entry_price:,.2f}\n"
+                f"\U0001f6ab <b>Stop Loss:</b> ${signal.stop_loss:,.2f}\n"
+                f"\U0001f3af <b>Take Profit:</b> ${signal.take_profit:,.2f}\n"
+                f"\n"
+                f"\U0001f4ca <b>Risk/Reward:</b> 1:{rr_ratio:.1f}\n"
+                f"\U0001f3af <b>Confidence:</b> {signal.confidence:.0%}\n"
+            )
+
+            if signal.reasons:
+                msg += f"\n\U0001f4a1 <b>Analysis:</b>\n"
+                for r in signal.reasons[:5]:
+                    msg += f"  \u2022 {r}\n"
+
+            msg += f"\n\u23f0 <i>{datetime.now().strftime('%b %d, %H:%M UTC')}</i>"
+            msg += f"\n\n\u26a1 <b>Auto-trade EXECUTED on your account</b>"
 
         return msg
 
