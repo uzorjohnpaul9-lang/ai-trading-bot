@@ -35,6 +35,7 @@ def init_db():
             salt TEXT NOT NULL,
             api_key TEXT,
             api_secret TEXT,
+            telegram_chat_id TEXT,
             subscription_tier TEXT DEFAULT 'free',
             subscription_expires TIMESTAMP,
             is_active BOOLEAN DEFAULT 1,
@@ -230,6 +231,18 @@ class UserModel:
         cursor.execute(
             "UPDATE users SET subscription_tier = ?, subscription_expires = ? WHERE id = ?",
             (tier, expires, user_id)
+        )
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def update_telegram_chat_id(user_id: int, chat_id: str):
+        """Set user's Telegram chat ID for notifications"""
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE users SET telegram_chat_id = ? WHERE id = ?",
+            (chat_id, user_id)
         )
         conn.commit()
         conn.close()

@@ -19,6 +19,7 @@ from risk_manager import RiskManager
 from paper_trader import PaperTrader
 from backtester import Backtester
 from telegram_bot import TelegramBot
+from copy_trader import copy_trader
 
 
 console = Console()
@@ -82,7 +83,7 @@ class TradingBot:
         }
 
     def execute_trade(self, analysis: dict):
-        """Execute a paper trade and post signal to Telegram"""
+        """Execute a paper trade and copy trade for paid users"""
         signal = analysis["signal"]
 
         # Check risk limits
@@ -105,12 +106,21 @@ class TradingBot:
             self.risk_manager.record_trade_open()
             self.stats["trades_taken"] += 1
 
-            # Send signal to Telegram
+            # Send signal to Telegram (free tier gets delayed)
             if self.telegram.enabled:
                 sent = self.telegram.send_signal(signal)
                 if sent:
                     self.stats["signals_sent"] += 1
                     console.print("[cyan]  Signal posted to Telegram![/cyan]")
+
+            # Execute copy trades for paid users
+            try:
+                copy_results = copy_trader.execute_signal_for_users(signal)
+                copied = sum(1 for r in copy_results if r["status"] == "executed")
+                if copied > 0:
+                    console.print(f"[cyan]  Copied to {copied} paid user(s)![/cyan]")
+            except Exception as e:
+                console.print(f"[yellow]  Copy trade error: {e}[/yellow]")
 
             # Display trade
             direction_color = "green" if signal.direction == "long" else "red"
@@ -231,6 +241,12 @@ class TradingBot:
 
                 # Check existing positions
                 self.check_positions()
+
+                # Check user copy trade positions
+                try:
+                    copy_trader.check_and_close_positions()
+                except Exception as e:
+                    console.print(f"[yellow]  Position check error: {e}[/yellow]")
 
                 # Analyze each pair
                 for symbol in config.trading.pairs:
