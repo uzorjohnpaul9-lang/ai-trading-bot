@@ -176,14 +176,14 @@ class TradingBot:
         table.add_column("Value", style="green")
 
         table.add_row("Mode", config.trading.mode.upper())
-        table.add_row("Balance (Cash)", f"${stats['balance']:,.2f}")
-        table.add_row("Open Positions", f"${stats['open_position_value']:,.2f}")
-        table.add_row("Total Equity", f"${stats['total_equity']:,.2f}")
-        table.add_row("Return", f"{stats['total_return']:+.2f}%")
-        table.add_row("Total Trades", str(stats['total_trades']))
-        table.add_row("Win Rate", f"{stats['win_rate']:.1f}%")
-        table.add_row("Open Positions", str(stats['open_positions']))
-        table.add_row("Drawdown", f"{risk_stats['drawdown']:.1f}%")
+        table.add_row("Balance (Cash)", f"${stats.get('balance', 0):,.2f}")
+        table.add_row("Open Positions", f"${stats.get('open_position_value', 0):,.2f}")
+        table.add_row("Total Equity", f"${stats.get('total_equity', 0):,.2f}")
+        table.add_row("Return", f"{stats.get('total_return', 0):+.2f}%")
+        table.add_row("Total Trades", str(stats.get('total_trades', 0)))
+        table.add_row("Win Rate", f"{stats.get('win_rate', 0):.1f}%")
+        table.add_row("Open Positions", str(stats.get('open_positions', 0)))
+        table.add_row("Drawdown", f"{risk_stats.get('drawdown', 0):.1f}%")
         table.add_row("Signals Found", str(self.stats['signals_found']))
         table.add_row("Signals Sent", str(self.stats['signals_sent']))
 
@@ -191,9 +191,12 @@ class TradingBot:
 
         # Send status to Telegram every 10 cycles
         if send_to_telegram and self.telegram.enabled:
-            risk_stats["balance"] = stats["total_equity"]
-            risk_stats["total_return"] = stats["total_return"]
-            self.telegram.send_status(risk_stats)
+            try:
+                risk_stats["balance"] = stats.get("total_equity", 0)
+                risk_stats["total_return"] = stats.get("total_return", 0)
+                self.telegram.send_status(risk_stats)
+            except Exception:
+                pass
 
     def run_backtest(self, symbol: str = "BTCUSDT"):
         """Run backtest on historical data"""
@@ -275,8 +278,6 @@ class TradingBot:
                 break
             except Exception as e:
                 console.print(f"[red]Error: {e}[/red]")
-                if self.telegram.enabled:
-                    self.telegram.send_error(str(e))
                 time.sleep(30)
 
 

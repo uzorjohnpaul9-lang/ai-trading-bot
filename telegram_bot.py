@@ -31,6 +31,7 @@ class TelegramBot:
         self.free_daily_limit = config.telegram.free_daily_limit
         self.messages_sent_today = 0
         self.last_reset = datetime.now().date()
+        self.payment_link = "https://t.me/crypto3_ai_signals"
 
     def _send_message(self, text: str, parse_mode: str = "HTML") -> bool:
         """Send a message via Telegram Bot API"""
@@ -145,11 +146,11 @@ class TelegramBot:
         return (
             f"\U0001f916 <b>Bot Status Update</b>\n"
             f"\n"
-            f"\U0001f4b0 <b>Balance:</b> ${stats['balance']:,.2f}\n"
-            f"\U0001f4c8 <b>Return:</b> {stats['total_return']:+.2f}%\n"
-            f"\U0001f4ca <b>Trades:</b> {stats['total_trades']}\n"
-            f"\u2705 <b>Win Rate:</b> {stats['win_rate']:.1f}%\n"
-            f"\U0001f4c9 <b>Drawdown:</b> {stats['drawdown']:.1f}%\n"
+            f"\U0001f4b0 <b>Balance:</b> ${stats.get('balance', 0):,.2f}\n"
+            f"\U0001f4c8 <b>Return:</b> {stats.get('total_return', 0):+.2f}%\n"
+            f"\U0001f4ca <b>Trades:</b> {stats.get('total_trades', 0)}\n"
+            f"\u2705 <b>Win Rate:</b> {stats.get('win_rate', 0):.1f}%\n"
+            f"\U0001f4c9 <b>Drawdown:</b> {stats.get('drawdown', 0):.1f}%\n"
         )
 
     def format_welcome(self) -> str:
@@ -228,8 +229,8 @@ class TelegramBot:
             f"\u2705 <b>Wins:</b> {wins} | \u274c <b>Losses:</b> {losses}\n"
             f"\U0001f4b0 <b>Today's PnL:</b> ${total_pnl:+,.2f}\n"
             f"\n"
-            f"\U0001f4b5 <b>Total Balance:</b> ${stats['balance']:,.2f}\n"
-            f"\U0001f4c8 <b>All-Time Return:</b> {stats['total_return']:+.2f}%\n"
+            f"\U0001f4b5 <b>Total Balance:</b> ${stats.get('balance', 0):,.2f}\n"
+            f"\U0001f4c8 <b>All-Time Return:</b> {stats.get('total_return', 0):+.2f}%\n"
         )
 
         return self._send_message(msg)
