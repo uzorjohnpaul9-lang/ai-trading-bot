@@ -119,6 +119,11 @@ class TradingBot:
                 if sent:
                     console.print("[cyan]  Pro signal posted to Telegram![/cyan]")
 
+                # VIP signal to VIP channel
+                sent = self.telegram.send_vip_signal(signal)
+                if sent:
+                    console.print("[cyan]  VIP signal posted to VIP channel![/cyan]")
+
             # Execute copy trades for paid users
             try:
                 copy_results = copy_trader.execute_signal_for_users(signal)
