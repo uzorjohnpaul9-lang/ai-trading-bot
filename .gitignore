@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+paper_trader_state.json
+trading_bot.db
+*.pem
+trading_bot.log
